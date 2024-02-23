@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>WebView Samples</title>
+    <style type="text/css">
+      .btn {
+        display: block;
+        margin: 20px auto;
+        padding: 5px;
+        background-color: #007aff;
+        border: 0;
+        color: #ffffff;
+        height: 40px;
+        width: 200px;
+      }
+
+      .btn-red {
+        background-color: #dd524d;
+      }
+
+      .btn-yellow {
+        background-color: #f0ad4e;
+      }
+
+      .desc {
+        padding: 10px;
+        color: #999999;
+      }
+
+      .post-message-section {
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="desc">加载static/web-view.html测试文件。由于小程序平台不支持加载本地html文件，需要配置到公网可访问服务器上进行测试。</p>
+    <div class="btn-list">
+      <button class="btn" type="button" data-action="getLocation">getLocation</button>
+      <button class="btn" type="button" data-action="setStorage">setStorage</button>
+      <button class="btn" type="button" data-action="getStorage">getStorage</button>
+    </div>
+    <div class="post-message-section">
+      <p class="desc">网页向应用发送消息，注意：小程序端应用会在此页面后退时接收到消息。</p>
+      <div class="btn-list">
+        <button class="btn btn-red" type="button" id="postMessage">postMessage</button>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var userAgent = navigator.userAgent;
+      if (userAgent.indexOf('AlipayClient') > -1) {
+        // 支付宝小程序的 JS-SDK 防止 404 需要动态加载，如果不需要兼容支付宝小程序，则无需引用此 JS 文件。
+        document.writeln('<script src="https://appx/web-view.min.js"' + '>' + '<' + '/' + 'script>');
+      } else if (/QQ/i.test(userAgent) && /miniProgram/i.test(userAgent)) {
+        // QQ 小程序
+        document.write(
+          '<script type="text/javascript" src="https://qqq.gtimg.cn/miniprogram/webview_jssdk/qqjssdk-1.0.0.js"><\/script>'
+        );
+      } else if (/miniProgram/i.test(userAgent) && /micromessenger/i.test(userAgent)) {
+        // 微信小程序 JS-SDK 如果不需要兼容微信小程序，则无需引用此 JS 文件。
+        document.write('<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"><\/script>');
+      } else if (/toutiaomicroapp/i.test(userAgent)) {
+        // 头条小程序 JS-SDK 如果不需要兼容头条小程序，则无需引用此 JS 文件。
+        document.write(
+          '<script type="text/javascript" src="https://s3.pstatp.com/toutiao/tmajssdk/jssdk-1.0.1.js"><\/script>');
+      } else if (/swan/i.test(userAgent)) {
+        // 百度小程序 JS-SDK 如果不需要兼容百度小程序，则无需引用此 JS 文件。
+        document.write(
+          '<script type="text/javascript" src="https://b.bdstatic.com/searchbox/icms/searchbox/js/swan-2.0.18.js"><\/script>'
+        );
+      } else if (/quickapp/i.test(userAgent)) {
+        // quickapp
+        document.write('<script type="text/javascript" src="https://quickapp/jssdk.webview.min.js"><\/script>');
+      }
+      if (!/toutiaomicroapp/i.test(userAgent)) {
+        document.querySelector('.post-message-section').style.visibility = 'visible';
+      }
+    </script>
+    <!-- uni 的 SDK -->
+    <!-- 需要把 uni.webview.1.5.5.js 下载到自己的服务器 -->
+    <script type="text/javascript" src="https://gitcode.net/dcloud/hello-uni-app-x/-/blob/alpha/hybrid/html/uni.webview.1.5.5.js"></script>
+    <script type="text/javascript">
+      // 待触发 `UniAppJSBridgeReady` 事件后，即可调用 uni 的 API。
+      document.addEventListener('UniAppJSBridgeReady', function() {
+        uni.postMessage({
+            data: {
+                action: 'message'
+            }
+        });
+        uni.getEnv(function(res) {
+            console.log('当前环境：' + JSON.stringify(res));
+        });
+
+        document.querySelector('.btn-list').addEventListener('click', function(evt) {
+          var target = evt.target;
+          if (target.tagName === 'BUTTON') {
+            var action = target.getAttribute('data-action');
+            switch (action) {
+				case 'getLocation':
+					my.getLocation({
+						type: 1, // 获取经纬度和省市区县数据
+						success: (res) => {
+						  console.log(res);
+						},
+						fail: (res) => {
+						  my.alert({ title: '定位失败', content: JSON.stringify(res) });
+						},
+						complete: () => {},
+					});
+					break;
+				case 'setStorage':
+					my.setStorage({
+					  key: 'storage_key',
+					  data: 'Hello!I am webview!',
+					  success: (res) => {
+					    my.alert({ title: "setStorage success" });
+					  },
+					  fail: (error) => {
+					    console.error('setStorage failed: ', JSON.stringify(error));
+					  },
+					});
+					break;
+				case 'getStorage':
+					my.getStorage({
+					  key: 'storage_key',
+					  success: (res) => {
+					    console.log(res);
+					    if (res.success) {
+					      console.log("执行成功");
+					    }
+					  },
+					  fail: (err) => {
+					    console.log(err)
+					  }
+					});
+              default:
+                console.log("Unexpected action ", action)
+                break;
+            }
+          }
+        });
+        document.getElementById('postMessage').addEventListener('click', function() {
+          uni.postMessage({
+            data: {
+              action: 'message'
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
