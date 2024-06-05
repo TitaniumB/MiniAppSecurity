@@ -19,32 +19,6 @@ public class URLCounter {
     private static Pattern wssPattern = Pattern.compile(wssProtocol, Pattern.CASE_INSENSITIVE);
 
     public static void getConstantUrl(SSAInstruction[] instructions, SymbolTable symbolTable, HashMap<String, Integer> urlCounter, List<String> unSfaeHttpUrls, List<String> unSafeWssUrls, List<String> secrets, List<String> wssURLs) throws MalformedURLException {
-        // 遍历前五条instruction找到其中最小的valueNumber
-//        int insLength = instructions.length;
-//        int scope = 5;
-//        int smallestValue = 0;
-//        if (insLength < 5){
-//            scope = insLength;
-//        }
-//        for (int i=0; i<scope; i++){
-//            SSAInstruction instruction = instructions[i];
-//            if (instruction != null){
-//                try {
-//                    String ins = instruction.toString();
-//                    if (ins.contains("=")){
-//
-//                    }
-//                    int tmpValue = instruction.getUse(0);
-//                    if (smallestValue == -1){
-//                        smallestValue = tmpValue;
-//                    }else if(tmpValue > smallestValue){
-//                        smallestValue = tmpValue;
-//                    }
-//                }catch (UnsupportedOperationException exception){
-//                    System.out.println(instruction.toString());
-//                }
-//            }
-//        }
 
         for (int i=0; i<symbolTable.getMaxValueNumber(); i++){
             if (symbolTable.isConstant(i) && symbolTable.isStringConstant(i)){

@@ -92,49 +92,6 @@ public class MiniJSAnalyser {
                             noTaintPaths.add(invokePath);
                         }
                     }
-//                    // 选一个目标field名称
-//                    String valFieldName = null;
-//                    if (valuableFieldNames.size() == 1) {
-//                        valFieldName = (String) valuableFieldNames.toArray()[0];
-//                    } else {
-//                        String[] proityNames = new String[]{
-//                                "url", "h5url", "h5"
-//                        };
-//                        for (String t : proityNames) {
-//                            if (valuableFieldNames.contains(t)) {
-//                                valFieldName = t;
-//                                break;
-//                            }
-//                        }
-//                        if (valFieldName == null) {
-//                            valFieldName = (String) valuableFieldNames.toArray()[0];
-//                        }
-//                    }
-//                    // 规则
-//                    HashSet<String> concatData = new HashSet<>();
-//                    ResultType type;
-//                    if (noTaintPaths.isEmpty()) {
-//                        System.out.println("No-Check for input url");
-//                        concatData = getConcatData(symbolTable, allTaintCatVal, concatFieldName);
-//                        type = ResultType.NO_CHECK;
-//                    } else if (hasTaintPaths.isEmpty()) {
-//                        System.out.println("No-Entry for input url");
-//                        type = ResultType.NO_ENTRY;
-//                    } else {
-//                        // 有的路径可以load，有的不行，这说明存在一定的检查
-//                        // 查看taintMainVal在condition语句中的存在性
-//                        if (hasCheckWithTaintVal(ir, valFieldName, symbolTable)) {
-//                            System.out.println("Has Check for input url");
-//                            type = ResultType.URL_CHECK;
-//                        } else {
-//                            System.out.println("No-entry for input url, but has other check");
-//                            type = ResultType.OTHER_CHECK;
-//                        }
-//                        concatData = getConcatData(symbolTable, allTaintCatVal, concatFieldName);
-//                    }
-//                    dumpData(FormatorAndRrcorder.getFileName(pathStr), type, valFieldName, concatData);
-//                    System.out.println("Finish analyze " + pathStr);
-//                    return;
                 }
             }
         }
